@@ -1,4 +1,4 @@
-package com.hitanshudhawan.todo.activities;
+package com.example.madlab23project.todo.activities;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -46,6 +46,7 @@ public class TodoAddActivity extends AppCompatActivity {
         mTodoEditText = findViewById(R.id.todo_edit_text_todo_add);
         mTodoDateTimeTextView = findViewById(R.id.todo_date_time_text_view_todo_add);
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_todo_add, menu);
@@ -62,7 +63,7 @@ public class TodoAddActivity extends AppCompatActivity {
             case R.id.todo_date_time_item_todo_add:
                 final Calendar currentDateTime = Calendar.getInstance();
                 mTodoDateTime = Calendar.getInstance();
-                TimePickerDialog timePickerDialog = new TimePickerDialog(TodoAddActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                TimePickerDialog timePickerDialog = new TimePickerDialog(com.hitanshudhawan.todo.activities.TodoAddActivity.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
                         mTodoDateTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
@@ -79,13 +80,13 @@ public class TodoAddActivity extends AppCompatActivity {
                             month = currentDateTime.get(Calendar.MONTH);
                             dayOfMonth = currentDateTime.get(Calendar.DAY_OF_MONTH);
                         }
-                        DatePickerDialog datePickerDialog = new DatePickerDialog(TodoAddActivity.this, new DatePickerDialog.OnDateSetListener() {
+                        DatePickerDialog datePickerDialog = new DatePickerDialog(com.hitanshudhawan.todo.activities.TodoAddActivity.this, new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
                                 mTodoDateTime.set(Calendar.YEAR, year);
                                 mTodoDateTime.set(Calendar.MONTH, month);
                                 mTodoDateTime.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                                mTodoDateTimeTextView.setText(DateFormat.is24HourFormat(TodoAddActivity.this) ? new SimpleDateFormat("MMMM dd, yyyy  h:mm").format(mTodoDateTime.getTime()) : new SimpleDateFormat("MMMM dd, yyyy  h:mm a").format(mTodoDateTime.getTime()));
+                                mTodoDateTimeTextView.setText(DateFormat.is24HourFormat(com.hitanshudhawan.todo.activities.TodoAddActivity.this) ? new SimpleDateFormat("MMMM dd, yyyy  h:mm").format(mTodoDateTime.getTime()) : new SimpleDateFormat("MMMM dd, yyyy  h:mm a").format(mTodoDateTime.getTime()));
                             }
                         }, year, month, dayOfMonth);
                         Calendar minDateTime = Calendar.getInstance();
@@ -93,7 +94,7 @@ public class TodoAddActivity extends AppCompatActivity {
                         datePickerDialog.getDatePicker().setMinDate(minDateTime.getTimeInMillis());
                         datePickerDialog.show();
                     }
-                }, currentDateTime.get(Calendar.HOUR_OF_DAY), currentDateTime.get(Calendar.MINUTE), DateFormat.is24HourFormat(TodoAddActivity.this));
+                }, currentDateTime.get(Calendar.HOUR_OF_DAY), currentDateTime.get(Calendar.MINUTE), DateFormat.is24HourFormat(com.hitanshudhawan.todo.activities.TodoAddActivity.this));
                 timePickerDialog.show();
                 break;
         }
@@ -110,19 +111,18 @@ public class TodoAddActivity extends AppCompatActivity {
             contentValues.put(TodoContract.TodoEntry.COLUMN_TODO_DONE, TodoContract.TodoEntry.TODO_NOT_DONE);
             Uri uri = getContentResolver().insert(TodoContract.TodoEntry.CONTENT_URI, contentValues);
 
-            WidgetHelper.updateWidget(TodoAddActivity.this);
+            WidgetHelper.updateWidget(com.hitanshudhawan.todo.activities.TodoAddActivity.this);
 
-            Toast.makeText(TodoAddActivity.this, "Todo added", Toast.LENGTH_SHORT).show();
+            Toast.makeText(com.hitanshudhawan.todo.activities.TodoAddActivity.this, "Todo added", Toast.LENGTH_SHORT).show();
 
             if (mTodoDateTime != null) {
                 if (mTodoDateTime.getTimeInMillis() > Calendar.getInstance().getTimeInMillis()) {
                     Cursor cursor = getContentResolver().query(ContentUris.withAppendedId(TodoContract.TodoEntry.CONTENT_URI, ContentUris.parseId(uri)), null, null, null, null);
                     cursor.moveToFirst();
-                    new NotificationHelper(TodoAddActivity.this).scheduleNotification(ContentUris.parseId(uri), Todo.fromCursor(cursor).getTitle(), mTodoDateTime.getTimeInMillis());
+                    new NotificationHelper(com.hitanshudhawan.todo.activities.TodoAddActivity.this).scheduleNotification(ContentUris.parseId(uri), Todo.fromCursor(cursor).getTitle(), mTodoDateTime.getTimeInMillis());
                 }
             }
         }
         finishAndRemoveTask();
     }
 }
-

@@ -1,4 +1,4 @@
-package com.hitanshudhawan.todo.adapters;
+package com.example.madlab23project.todo.adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.hitanshudhawan.todo.R;
-import com.hitanshudhawan.todo.activities.TodoDetailsActivity;
 import com.hitanshudhawan.todo.database.Todo;
 import com.hitanshudhawan.todo.utils.Constants;
 import com.hitanshudhawan.todo.utils.CursorRecyclerAdapter;
