@@ -74,7 +74,7 @@ public class TodoDetailsActivity extends AppCompatActivity {
 
         mTodoEditText.setText(mTodoTitle);
 
-        mTodoDateTimeTextView.setText(mTodoDateTime.getTimeInMillis() == 0 ? "" : DateFormat.is24HourFormat(com.hitanshudhawan.todo.activities.TodoDetailsActivity.this) ? new SimpleDateFormat("MMMM dd, yyyy  h:mm").format(mTodoDateTime.getTime()) : new SimpleDateFormat("MMMM dd, yyyy  h:mm a").format(mTodoDateTime.getTime()));
+        mTodoDateTimeTextView.setText(mTodoDateTime.getTimeInMillis() == 0 ? "" : DateFormat.is24HourFormat(TodoDetailsActivity.this) ? new SimpleDateFormat("MMMM dd, yyyy  h:mm").format(mTodoDateTime.getTime()) : new SimpleDateFormat("MMMM dd, yyyy  h:mm a").format(mTodoDateTime.getTime()));
     }
 
     @Override
@@ -92,7 +92,7 @@ public class TodoDetailsActivity extends AppCompatActivity {
                 break;
             case R.id.todo_date_time_item_todo_details:
                 final Calendar currentDateTime = Calendar.getInstance();
-                TimePickerDialog timePickerDialog = new TimePickerDialog(com.hitanshudhawan.todo.activities.TodoDetailsActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                TimePickerDialog timePickerDialog = new TimePickerDialog(TodoDetailsActivity.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
                         mTodoDateTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
@@ -109,13 +109,13 @@ public class TodoDetailsActivity extends AppCompatActivity {
                             month = currentDateTime.get(Calendar.MONTH);
                             dayOfMonth = currentDateTime.get(Calendar.DAY_OF_MONTH);
                         }
-                        DatePickerDialog datePickerDialog = new DatePickerDialog(com.hitanshudhawan.todo.activities.TodoDetailsActivity.this, new DatePickerDialog.OnDateSetListener() {
+                        DatePickerDialog datePickerDialog = new DatePickerDialog(TodoDetailsActivity.this, new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
                                 mTodoDateTime.set(Calendar.YEAR, year);
                                 mTodoDateTime.set(Calendar.MONTH, month);
                                 mTodoDateTime.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                                mTodoDateTimeTextView.setText(DateFormat.is24HourFormat(com.hitanshudhawan.todo.activities.TodoDetailsActivity.this) ? new SimpleDateFormat("MMMM dd, yyyy  h:mm").format(mTodoDateTime.getTime()) : new SimpleDateFormat("MMMM dd, yyyy  h:mm a").format(mTodoDateTime.getTime()));
+                                mTodoDateTimeTextView.setText(DateFormat.is24HourFormat(TodoDetailsActivity.this) ? new SimpleDateFormat("MMMM dd, yyyy  h:mm").format(mTodoDateTime.getTime()) : new SimpleDateFormat("MMMM dd, yyyy  h:mm a").format(mTodoDateTime.getTime()));
                                 mDateTimeChanged = true;
                             }
                         }, year, month, dayOfMonth);
@@ -124,11 +124,11 @@ public class TodoDetailsActivity extends AppCompatActivity {
                         datePickerDialog.getDatePicker().setMinDate(minDateTime.getTimeInMillis());
                         datePickerDialog.show();
                     }
-                }, currentDateTime.get(Calendar.HOUR_OF_DAY), currentDateTime.get(Calendar.MINUTE), DateFormat.is24HourFormat(com.hitanshudhawan.todo.activities.TodoDetailsActivity.this));
+                }, currentDateTime.get(Calendar.HOUR_OF_DAY), currentDateTime.get(Calendar.MINUTE), DateFormat.is24HourFormat(TodoDetailsActivity.this));
                 timePickerDialog.show();
                 break;
             case R.id.todo_done_item_todo_add:
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(com.hitanshudhawan.todo.activities.TodoDetailsActivity.this);
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(TodoDetailsActivity.this);
                 alertDialogBuilder.setTitle("Todo Done?");
                 alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override
@@ -143,13 +143,13 @@ public class TodoDetailsActivity extends AppCompatActivity {
                         contentValues.put(TodoContract.TodoEntry.COLUMN_TODO_DONE, TodoContract.TodoEntry.TODO_DONE);
                         getContentResolver().update(ContentUris.withAppendedId(TodoContract.TodoEntry.CONTENT_URI, mTodoId), contentValues, null, null);
 
-                        WidgetHelper.updateWidget(com.hitanshudhawan.todo.activities.TodoDetailsActivity.this);
+                        WidgetHelper.updateWidget(TodoDetailsActivity.this);
 
-                        Toast.makeText(com.hitanshudhawan.todo.activities.TodoDetailsActivity.this, "Todo Done.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(TodoDetailsActivity.this, "Todo Done.", Toast.LENGTH_SHORT).show();
 
                         Cursor cursor = getContentResolver().query(ContentUris.withAppendedId(TodoContract.TodoEntry.CONTENT_URI, mTodoId), null, null, null, null);
                         cursor.moveToFirst();
-                        new NotificationHelper(com.hitanshudhawan.todo.activities.TodoDetailsActivity.this).cancelScheduledNotification(mTodoId, Todo.fromCursor(cursor).getTitle());
+                        new NotificationHelper(TodoDetailsActivity.this).cancelScheduledNotification(mTodoId, Todo.fromCursor(cursor).getTitle());
 
                         finishAndRemoveTask();
                     }
@@ -172,13 +172,13 @@ public class TodoDetailsActivity extends AppCompatActivity {
             contentValues.put(TodoContract.TodoEntry.COLUMN_TODO_DONE, TodoContract.TodoEntry.TODO_NOT_DONE);
             getContentResolver().update(ContentUris.withAppendedId(TodoContract.TodoEntry.CONTENT_URI, mTodoId), contentValues, null, null);
 
-            WidgetHelper.updateWidget(com.hitanshudhawan.todo.activities.TodoDetailsActivity.this);
+            WidgetHelper.updateWidget(TodoDetailsActivity.this);
 
             if (mTodoDateTime != null && mTodoDateTime.getTimeInMillis() != 0) {
                 if (mTodoDateTime.getTimeInMillis() > Calendar.getInstance().getTimeInMillis()) {
                     Cursor cursor = getContentResolver().query(ContentUris.withAppendedId(TodoContract.TodoEntry.CONTENT_URI, mTodoId), null, null, null, null);
                     cursor.moveToFirst();
-                    new NotificationHelper(com.hitanshudhawan.todo.activities.TodoDetailsActivity.this).scheduleNotification(mTodoId, Todo.fromCursor(cursor).getTitle(), mTodoDateTime.getTimeInMillis());
+                    new NotificationHelper(TodoDetailsActivity.this).scheduleNotification(mTodoId, Todo.fromCursor(cursor).getTitle(), mTodoDateTime.getTimeInMillis());
                 }
             }
         }

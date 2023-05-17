@@ -71,16 +71,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(com.hitanshudhawan.todo.activities.MainActivity.this, TodoAddActivity.class));
+                startActivity(new Intent(MainActivity.this, com.hitanshudhawan.todo.activities.TodoAddActivity.class));
             }
         });
     }
 
     private void initRecyclerView() {
         mTodoRecyclerView = findViewById(R.id.todo_recycler_view);
-        mTodoCursorAdapter = new TodoCursorAdapter(com.hitanshudhawan.todo.activities.MainActivity.this);
+        mTodoCursorAdapter = new TodoCursorAdapter(MainActivity.this);
         mTodoRecyclerView.setAdapter(mTodoCursorAdapter);
-        mTodoRecyclerView.setLayoutManager(new LinearLayoutManager(com.hitanshudhawan.todo.activities.MainActivity.this, LinearLayoutManager.VERTICAL, false));
+        mTodoRecyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false));
         DividerItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         itemDecoration.setDrawable(getDrawable(R.drawable.divider));
         mTodoRecyclerView.addItemDecoration(itemDecoration);
@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
         });
 
-        getSupportLoaderManager().initLoader(0, null, com.hitanshudhawan.todo.activities.MainActivity.this);
+        getSupportLoaderManager().initLoader(0, null, MainActivity.this);
 
         mTodoRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -131,9 +131,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     contentValues.put(TodoContract.TodoEntry.COLUMN_TODO_DONE, TodoContract.TodoEntry.TODO_DONE);
                     getContentResolver().update(ContentUris.withAppendedId(TodoContract.TodoEntry.CONTENT_URI, id), contentValues, null, null);
 
-                    WidgetHelper.updateWidget(com.hitanshudhawan.todo.activities.MainActivity.this);
+                    WidgetHelper.updateWidget(MainActivity.this);
 
-                    new NotificationHelper(com.hitanshudhawan.todo.activities.MainActivity.this).cancelScheduledNotification(id, Todo.fromCursor(cursor).getTitle());
+                    new NotificationHelper(MainActivity.this).cancelScheduledNotification(id, Todo.fromCursor(cursor).getTitle());
 
                     Snackbar doneSnackbar = Snackbar.make(viewHolder.itemView, "Todo Done.", Snackbar.LENGTH_LONG);
                     doneSnackbar.setAction("Undo", new View.OnClickListener() {
@@ -143,10 +143,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                             contentValues.put(TodoContract.TodoEntry.COLUMN_TODO_DONE, TodoContract.TodoEntry.TODO_NOT_DONE);
                             getContentResolver().update(ContentUris.withAppendedId(TodoContract.TodoEntry.CONTENT_URI, id), contentValues, null, null);
 
-                            WidgetHelper.updateWidget(com.hitanshudhawan.todo.activities.MainActivity.this);
+                            WidgetHelper.updateWidget(MainActivity.this);
 
                             if (Todo.fromCursor(cursor).getDateTime().getTimeInMillis() != 0 && Todo.fromCursor(cursor).getDateTime().getTimeInMillis() > Calendar.getInstance().getTimeInMillis()) {
-                                new NotificationHelper(com.hitanshudhawan.todo.activities.MainActivity.this).scheduleNotification(id, Todo.fromCursor(cursor).getTitle(), Todo.fromCursor(cursor).getDateTime().getTimeInMillis());
+                                new NotificationHelper(MainActivity.this).scheduleNotification(id, Todo.fromCursor(cursor).getTitle(), Todo.fromCursor(cursor).getDateTime().getTimeInMillis());
                             }
 
                         }
@@ -156,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     // Change Date and Time.
                     final Calendar currentDateTime = Calendar.getInstance();
                     final Calendar todoDateTime = Calendar.getInstance();
-                    TimePickerDialog timePickerDialog = new TimePickerDialog(com.hitanshudhawan.todo.activities.MainActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                    TimePickerDialog timePickerDialog = new TimePickerDialog(MainActivity.this, new TimePickerDialog.OnTimeSetListener() {
                         @Override
                         public void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
                             todoDateTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                                 month = currentDateTime.get(Calendar.MONTH);
                                 dayOfMonth = currentDateTime.get(Calendar.DAY_OF_MONTH);
                             }
-                            DatePickerDialog datePickerDialog = new DatePickerDialog(com.hitanshudhawan.todo.activities.MainActivity.this, new DatePickerDialog.OnDateSetListener() {
+                            DatePickerDialog datePickerDialog = new DatePickerDialog(MainActivity.this, new DatePickerDialog.OnDateSetListener() {
                                 @Override
                                 public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
                                     todoDateTime.set(Calendar.YEAR, year);
@@ -183,12 +183,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                                     contentValues.put(TodoContract.TodoEntry.COLUMN_TODO_DATE_TIME, todoDateTime.getTimeInMillis());
                                     getContentResolver().update(ContentUris.withAppendedId(TodoContract.TodoEntry.CONTENT_URI, id), contentValues, null, null);
 
-                                    WidgetHelper.updateWidget(com.hitanshudhawan.todo.activities.MainActivity.this);
+                                    WidgetHelper.updateWidget(MainActivity.this);
 
                                     if (todoDateTime.getTimeInMillis() > Calendar.getInstance().getTimeInMillis()) {
                                         Cursor cursor = getContentResolver().query(ContentUris.withAppendedId(TodoContract.TodoEntry.CONTENT_URI, id), null, null, null, null);
                                         cursor.moveToFirst();
-                                        new NotificationHelper(com.hitanshudhawan.todo.activities.MainActivity.this).scheduleNotification(id, Todo.fromCursor(cursor).getTitle(), todoDateTime.getTimeInMillis());
+                                        new NotificationHelper(MainActivity.this).scheduleNotification(id, Todo.fromCursor(cursor).getTitle(), todoDateTime.getTimeInMillis());
                                     }
                                 }
                             }, year, month, dayOfMonth);
@@ -197,7 +197,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                             datePickerDialog.getDatePicker().setMinDate(minDateTime.getTimeInMillis());
                             datePickerDialog.show();
                         }
-                    }, currentDateTime.get(Calendar.HOUR_OF_DAY), currentDateTime.get(Calendar.MINUTE), DateFormat.is24HourFormat(com.hitanshudhawan.todo.activities.MainActivity.this));
+                    }, currentDateTime.get(Calendar.HOUR_OF_DAY), currentDateTime.get(Calendar.MINUTE), DateFormat.is24HourFormat(MainActivity.this));
                     timePickerDialog.show();
                     mTodoCursorAdapter.notifyItemChanged(viewHolder.getAdapterPosition());
                 }
@@ -214,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
                     if (dX > 0) {
                         Paint p = new Paint();
-                        p.setColor(ContextCompat.getColor(com.hitanshudhawan.todo.activities.MainActivity.this, R.color.colorTodoDone));
+                        p.setColor(ContextCompat.getColor(MainActivity.this, R.color.colorTodoDone));
                         RectF background = new RectF((float) itemView.getLeft(), (float) itemView.getTop(), dX, (float) itemView.getBottom());
                         canvas.drawRect(background, p);
                         canvas.clipRect(background);
@@ -224,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         canvas.restore();
                     } else {
                         Paint p = new Paint();
-                        p.setColor(ContextCompat.getColor(com.hitanshudhawan.todo.activities.MainActivity.this, R.color.colorTodoDateTimeChange));
+                        p.setColor(ContextCompat.getColor(MainActivity.this, R.color.colorTodoDateTimeChange));
                         RectF background = new RectF((float) itemView.getRight() + dX, (float) itemView.getTop(), (float) itemView.getRight(), (float) itemView.getBottom());
                         canvas.drawRect(background, p);
                         canvas.clipRect(background);
@@ -272,7 +272,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
-        return new CursorLoader(com.hitanshudhawan.todo.activities.MainActivity.this,
+        return new CursorLoader(MainActivity.this,
                 TodoContract.TodoEntry.CONTENT_URI,
                 null,
                 TodoContract.TodoEntry.COLUMN_TODO_DONE + " = " + TodoContract.TodoEntry.TODO_NOT_DONE,

@@ -10,6 +10,9 @@ import android.net.Uri;
 import android.widget.RemoteViews;
 
 import com.hitanshudhawan.todo.R;
+import com.hitanshudhawan.todo.activities.MainActivity;
+import com.hitanshudhawan.todo.activities.TodoAddActivity;
+import com.hitanshudhawan.todo.activities.TodoDetailsActivity;
 
 /**
  * Implementation of App Widget functionality.
